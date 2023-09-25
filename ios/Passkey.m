@@ -8,12 +8,14 @@ RCT_EXTERN_METHOD(register:(NSString)identifier
                   withDisplayName:(NSString) displayName
                   withUserId:(NSString) userId
                   withSecurityKey: (BOOL) securityKey
+                  withPreferImmediatelyAvailableCredentails:(BOOL) preferImmediatelyAvailableCredentials
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(authenticate:(NSString)identifier
                   withChallenge:(NSString)challenge
                   withSecurityKey:(BOOL) securityKey
+                  withPreferImmediatelyAvailableCredentails:(BOOL) preferImmediatelyAvailableCredentials
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
