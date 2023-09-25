@@ -17,7 +17,16 @@ export class PasskeyiOS {
    */
   public static async register(
     request: PasskeyRegistrationRequest,
-    withSecurityKey = false
+    {
+      withSecurityKey,
+      preferImmediatelyAvailableCredentials,
+    }: {
+      withSecurityKey: boolean;
+      preferImmediatelyAvailableCredentials?: boolean;
+    } = {
+      withSecurityKey: false,
+      preferImmediatelyAvailableCredentials: false,
+    }
   ): Promise<PasskeyRegistrationResult> {
     // Extract the required data from the attestation request
     const { rpId, challenge, name, userID } =
@@ -29,7 +38,8 @@ export class PasskeyiOS {
         challenge,
         name,
         userID,
-        withSecurityKey
+        withSecurityKey,
+        preferImmediatelyAvailableCredentials
       );
       return this.handleNativeRegistrationResult(response);
     } catch (error) {
@@ -76,13 +86,23 @@ export class PasskeyiOS {
    */
   public static async authenticate(
     request: PasskeyAuthenticationRequest,
-    withSecurityKey = false
+    {
+      withSecurityKey,
+      preferImmediatelyAvailableCredentials,
+    }: {
+      withSecurityKey: boolean;
+      preferImmediatelyAvailableCredentials?: boolean;
+    } = {
+      withSecurityKey: false,
+      preferImmediatelyAvailableCredentials: false,
+    }
   ): Promise<PasskeyAuthenticationResult> {
     try {
       const response = await NativePasskey.authenticate(
         request.rpId,
         request.challenge,
-        withSecurityKey
+        withSecurityKey,
+        preferImmediatelyAvailableCredentials
       );
       return this.handleNativeAuthenticationResult(response);
     } catch (error) {

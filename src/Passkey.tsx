@@ -14,8 +14,12 @@ export class Passkey {
    */
   public static async register(
     request: PasskeyRegistrationRequest,
-    { withSecurityKey }: { withSecurityKey: boolean } = {
+    options: {
+      withSecurityKey: boolean;
+      preferImmediatelyAvailableCredentials?: boolean;
+    } = {
       withSecurityKey: false,
+      preferImmediatelyAvailableCredentials: false,
     }
   ): Promise<PasskeyRegistrationResult> {
     if (!Passkey.isSupported) {
@@ -25,7 +29,7 @@ export class Passkey {
     if (Platform.OS === 'android') {
       return PasskeyAndroid.register(request);
     }
-    return PasskeyiOS.register(request, withSecurityKey);
+    return PasskeyiOS.register(request, options);
   }
 
   /**
@@ -38,8 +42,12 @@ export class Passkey {
    */
   public static async authenticate(
     request: PasskeyAuthenticationRequest,
-    { withSecurityKey }: { withSecurityKey: boolean } = {
+    options: {
+      withSecurityKey: boolean;
+      preferImmediatelyAvailableCredentials?: boolean;
+    } = {
       withSecurityKey: false,
+      preferImmediatelyAvailableCredentials: false,
     }
   ): Promise<PasskeyAuthenticationResult> {
     if (!Passkey.isSupported) {
@@ -49,7 +57,7 @@ export class Passkey {
     if (Platform.OS === 'android') {
       return PasskeyAndroid.authenticate(request);
     }
-    return PasskeyiOS.authenticate(request, withSecurityKey);
+    return PasskeyiOS.authenticate(request, options);
   }
 
   /**
