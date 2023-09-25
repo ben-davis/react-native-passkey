@@ -151,7 +151,7 @@ class Passkey: NSObject {
         }
 
         // Check if Passkeys are supported on this OS version
-        if #available(iOS 15.0, *) {
+        if #available(iOS 16.0, *) {
             let authController: ASAuthorizationController
 
             // Check if authentication should proceed with a security key

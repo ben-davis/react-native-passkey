@@ -26,7 +26,7 @@ class PasskeyDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizat
         }
     }
 
-    @available(iOS 15.0, *)
+    @available(iOS 16.0, *)
     func
         autofill(controller: ASAuthorizationController)
     {
