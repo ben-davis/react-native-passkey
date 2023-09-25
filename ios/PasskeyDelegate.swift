@@ -12,7 +12,7 @@ class PasskeyDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizat
 
     // Perform the authorization request for a given ASAuthorizationController instance
     @available(iOS 15.0, *)
-    //@objc(performAuthForController:withPreferImmediatelyAvailableCredentials:)
+    // @objc(performAuthForController:withPreferImmediatelyAvailableCredentials:)
     func
         performAuthForController(controller: ASAuthorizationController, preferImmediatelyAvailableCredentials: Bool)
     {
@@ -24,6 +24,16 @@ class PasskeyDelegate: NSObject, ASAuthorizationControllerDelegate, ASAuthorizat
         } else {
             controller.performRequests()
         }
+    }
+
+    @available(iOS 15.0, *)
+    func
+        autofill(controller: ASAuthorizationController)
+    {
+        controller.delegate = self
+        controller.presentationContextProvider = self
+
+        controller.performAutoFillAssistedRequests()
     }
 
     @available(iOS 13.0, *)

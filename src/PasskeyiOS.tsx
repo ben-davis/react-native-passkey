@@ -111,6 +111,35 @@ export class PasskeyiOS {
   }
 
   /**
+   * iOS implementation of the autofill process
+   *
+   * @param request The FIDO2 Assertion Request in JSON format
+   * @param withSecurityKey A boolean indicating wether a security key should be used for authentication
+   * @returns The FIDO2 Assertion Result in JSON format
+   */
+  public static async autofill(
+    request: PasskeyAuthenticationRequest,
+    {
+      withSecurityKey,
+    }: {
+      withSecurityKey: boolean;
+    } = {
+      withSecurityKey: false,
+    }
+  ): Promise<PasskeyAuthenticationResult> {
+    try {
+      const response = await NativePasskey.autofill(
+        request.rpId,
+        request.challenge,
+        withSecurityKey
+      );
+      return this.handleNativeAuthenticationResult(response);
+    } catch (error) {
+      throw handleNativeError(error);
+    }
+  }
+
+  /**
    * Transform the iOS-specific assertion result into a FIDO2 result
    */
   private static handleNativeAuthenticationResult(

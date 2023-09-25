@@ -19,6 +19,12 @@ RCT_EXTERN_METHOD(authenticate:(NSString)identifier
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(autofill:(NSString)identifier
+                  withChallenge:(NSString)challenge
+                  withSecurityKey:(BOOL) securityKey
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject);
+
 + (BOOL)requiresMainQueueSetup
 {
   return NO;

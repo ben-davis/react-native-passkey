@@ -142,6 +142,70 @@ class Passkey: NSObject {
         }
     }
 
+    @objc(autofill:withChallenge:withSecurityKey:withResolver:withRejecter:)
+    func autofill(_ identifier: String, challenge: String, securityKey: Bool, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        // Convert challenge to correct type
+        guard let challengeData = Data(base64Encoded: challenge) else {
+            reject(PassKeyError.invalidChallenge.rawValue, PassKeyError.invalidChallenge.rawValue, nil)
+            return
+        }
+
+        // Check if Passkeys are supported on this OS version
+        if #available(iOS 15.0, *) {
+            let authController: ASAuthorizationController
+
+            // Check if authentication should proceed with a security key
+            if securityKey {
+                // Create a new assertion request with security key
+                let securityKeyProvider = ASAuthorizationSecurityKeyPublicKeyCredentialProvider(relyingPartyIdentifier: identifier)
+                let authRequest = securityKeyProvider.createCredentialAssertionRequest(challenge: challengeData)
+                authController = ASAuthorizationController(authorizationRequests: [authRequest])
+            } else {
+                // Create a new assertion request without security key
+                let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: identifier)
+                let authRequest = platformProvider.createCredentialAssertionRequest(challenge: challengeData)
+                authController = ASAuthorizationController(authorizationRequests: [authRequest])
+            }
+
+            // Set up a PasskeyDelegate instance with a callback function
+            self.passKeyDelegate = PasskeyDelegate { error, result in
+                // Check if authorization process returned an error and throw if thats the case
+                if error != nil {
+                    let passkeyError = self.handleErrorCode(error: error!)
+                    reject(passkeyError.rawValue, passkeyError.rawValue, nil)
+                    return
+                }
+                // Check if the result object contains a valid authentication result
+                if let assertionResult = result?.assertionResult {
+                    // Return a NSDictionary instance with the received authorization data
+                    let authResponse: NSDictionary = [
+                        "rawAuthenticatorData": assertionResult.rawAuthenticatorData.base64EncodedString(),
+                        "rawClientDataJSON": assertionResult.rawClientDataJSON.base64EncodedString(),
+                        "signature": assertionResult.signature.base64EncodedString(),
+                    ]
+
+                    let authResult: NSDictionary = [
+                        "credentialID": assertionResult.credentialID.base64EncodedString(),
+                        "userID": String(decoding: assertionResult.userID, as: UTF8.self),
+                        "response": authResponse,
+                    ]
+                    resolve(authResult)
+                } else {
+                    // If result didn't contain a valid authentication result throw an error
+                    reject(PassKeyError.requestFailed.rawValue, PassKeyError.requestFailed.rawValue, nil)
+                }
+            }
+
+            if let passKeyDelegate = self.passKeyDelegate {
+                // Perform the autofill request
+                passKeyDelegate.autofill(controller: authController)
+            }
+        } else {
+            // If Passkeys are not supported throw an error
+            reject(PassKeyError.notSupported.rawValue, PassKeyError.notSupported.rawValue, nil)
+        }
+    }
+
     // Handles ASAuthorization error codes
     func handleErrorCode(error: Error) -> PassKeyError {
         let errorCode = (error as NSError).code
