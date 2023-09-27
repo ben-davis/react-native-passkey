@@ -3,6 +3,7 @@ import AuthenticationServices
 @objc(Passkey)
 class Passkey: NSObject {
     var passKeyDelegate: PasskeyDelegate?
+    var authController: ASAuthorizationController?
 
     @objc(register:withChallenge:withDisplayName:withUserId:withSecurityKey:withPreferImmediatelyAvailableCredentials:withResolver:withRejecter:)
     func register(
@@ -24,6 +25,14 @@ class Passkey: NSObject {
 
         // Check if Passkeys are supported on this OS version
         if #available(iOS 15.0, *) {
+            // If an existing controller is running, cancel it
+            if #available(iOS 16.0, *) {
+                if let authController {
+                    authController.cancel()
+                    self.authController = nil
+                }
+            }
+
             let authController: ASAuthorizationController
 
             // Check if registration should proceed with a security key
@@ -88,6 +97,14 @@ class Passkey: NSObject {
 
         // Check if Passkeys are supported on this OS version
         if #available(iOS 15.0, *) {
+            // If an existing controller is running, cancel it
+            if #available(iOS 16.0, *) {
+                if let authController {
+                    authController.cancel()
+                    self.authController = nil
+                }
+            }
+
             let authController: ASAuthorizationController
 
             // Check if authentication should proceed with a security key
@@ -179,6 +196,9 @@ class Passkey: NSObject {
                 let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: identifier)
                 let authRequest = platformProvider.createCredentialAssertionRequest(challenge: challengeData)
                 authController = ASAuthorizationController(authorizationRequests: [authRequest])
+
+                // Set the controller so we can cancel during an authentication
+                self.authController = authController
             }
 
             // Set up a PasskeyDelegate instance with a callback function
