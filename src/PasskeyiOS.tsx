@@ -21,7 +21,7 @@ export class PasskeyiOS {
       withSecurityKey,
       preferImmediatelyAvailableCredentials,
     }: {
-      withSecurityKey: boolean;
+      withSecurityKey?: boolean;
       preferImmediatelyAvailableCredentials?: boolean;
     } = {
       withSecurityKey: false,
@@ -90,7 +90,7 @@ export class PasskeyiOS {
       withSecurityKey,
       preferImmediatelyAvailableCredentials,
     }: {
-      withSecurityKey: boolean;
+      withSecurityKey?: boolean;
       preferImmediatelyAvailableCredentials?: boolean;
     } = {
       withSecurityKey: false,
@@ -101,6 +101,7 @@ export class PasskeyiOS {
       const response = await NativePasskey.authenticate(
         request.rpId,
         request.challenge,
+        request.allowCredentials,
         withSecurityKey,
         preferImmediatelyAvailableCredentials
       );

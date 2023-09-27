@@ -15,7 +15,7 @@ export class Passkey {
   public static async register(
     request: PasskeyRegistrationRequest,
     options: {
-      withSecurityKey: boolean;
+      withSecurityKey?: boolean;
       preferImmediatelyAvailableCredentials?: boolean;
     } = {
       withSecurityKey: false,
@@ -43,7 +43,7 @@ export class Passkey {
   public static async authenticate(
     request: PasskeyAuthenticationRequest,
     options: {
-      withSecurityKey: boolean;
+      withSecurityKey?: boolean;
       preferImmediatelyAvailableCredentials?: boolean;
     } = {
       withSecurityKey: false,

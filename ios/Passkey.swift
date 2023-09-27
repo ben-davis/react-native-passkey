@@ -78,8 +78,8 @@ class Passkey: NSObject {
         }
     }
 
-    @objc(authenticate:withChallenge:withSecurityKey:withPreferImmediatelyAvailableCredentials:withResolver:withRejecter:)
-    func authenticate(_ identifier: String, challenge: String, securityKey: Bool, preferImmediatelyAvailableCredentials: Bool = false, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    @objc(authenticate:withChallenge:withCredentialIDs:withSecurityKey:withPreferImmediatelyAvailableCredentials:withResolver:withRejecter:)
+    func authenticate(_ identifier: String, challenge: String, credentialIDs: [String], securityKey: Bool, preferImmediatelyAvailableCredentials: Bool = false, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         // Convert challenge to correct type
         guard let challengeData = Data(base64Encoded: challenge) else {
             reject(PassKeyError.invalidChallenge.rawValue, PassKeyError.invalidChallenge.rawValue, nil)
@@ -100,6 +100,20 @@ class Passkey: NSObject {
                 // Create a new assertion request without security key
                 let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: identifier)
                 let authRequest = platformProvider.createCredentialAssertionRequest(challenge: challengeData)
+
+                if credentialIDs.isEmpty == false {
+                    var ids: [ASAuthorizationPlatformPublicKeyCredentialDescriptor] = []
+
+                    credentialIDs.forEach { base64Id in
+                        guard let id = Data(base64Encoded: base64Id)
+                        else { return }
+
+                        ids.append(ASAuthorizationPlatformPublicKeyCredentialDescriptor(credentialID: id))
+                    }
+
+                    authRequest.allowedCredentials = ids
+                }
+
                 authController = ASAuthorizationController(authorizationRequests: [authRequest])
             }
 
