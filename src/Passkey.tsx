@@ -88,6 +88,23 @@ export class Passkey {
   }
 
   /**
+   * Cancels any running autofill
+   *
+   * @throws
+   */
+  public static async cancelAutofill() {
+    if (!Passkey.isSupported) {
+      throw NotSupportedError;
+    }
+
+    if (Platform.OS === 'android') {
+      throw NotSupportedError;
+    }
+
+    return PasskeyiOS.cancelAutofill();
+  }
+
+  /**
    * Checks if Passkeys are supported on the current device
    *
    * @returns A boolean indicating whether Passkeys are supported

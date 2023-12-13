@@ -240,6 +240,19 @@ class Passkey: NSObject {
         }
     }
 
+    @objc(autofill:withResolver:withRejecter:)
+    func cancelAutofill(_ identifier: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        // Check if Passkeys are supported on this OS version
+        if #available(iOS 16.0, *) {
+            if let authController {
+                authController.cancel()
+                self.authController = nil
+            }
+        }
+
+        resolve()
+    }
+
     // Handles ASAuthorization error codes
     func handleErrorCode(error: Error) -> PassKeyError {
         let errorCode = (error as NSError).code

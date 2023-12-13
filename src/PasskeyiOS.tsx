@@ -141,6 +141,17 @@ export class PasskeyiOS {
   }
 
   /**
+   * iOS implementation of the autofill cancel
+   */
+  public static async cancelAutofill() {
+    try {
+      await NativePasskey.cancelAutofill();
+    } catch (error) {
+      throw handleNativeError(error);
+    }
+  }
+
+  /**
    * Transform the iOS-specific assertion result into a FIDO2 result
    */
   private static handleNativeAuthenticationResult(
