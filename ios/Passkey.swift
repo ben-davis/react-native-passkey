@@ -242,7 +242,7 @@ class Passkey: NSObject {
     }
 
     @objc(cancelAutofill:withResolver:withRejecter:)
-    func cancelAutofill(_ identifier: String, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+    func cancelAutofill(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         // Check if Passkeys are supported on this OS version
         if #available(iOS 16.0, *) {
             if let authController {

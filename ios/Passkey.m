@@ -26,8 +26,7 @@ RCT_EXTERN_METHOD(autofill:(NSString)identifier
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(cancelAutofill:(NSString)identifier
-                  withResolver:(RCTPromiseResolveBlock)resolve
+RCT_EXTERN_METHOD(cancelAutofill: (RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject);
 
 + (BOOL)requiresMainQueueSetup
