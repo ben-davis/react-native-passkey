@@ -1,5 +1,6 @@
 import AuthenticationServices
 
+@available(iOS 13.0, *)
 @objc(Passkey)
 class Passkey: NSObject {
     var passKeyDelegate: PasskeyDelegate?
@@ -250,7 +251,7 @@ class Passkey: NSObject {
             }
         }
 
-        resolve()
+        resolve(nil)
     }
 
     // Handles ASAuthorization error codes
